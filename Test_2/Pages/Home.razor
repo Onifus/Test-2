@@ -1,0 +1,74 @@
+﻿@page "/"
+@using Test_2.Models
+
+<PageTitle>Můj seznam přaní</PageTitle>
+
+<label>Jmeno:</label>
+<input type="text" @bind="Item.Prop_Name">
+<br>
+<br>
+<label>Částka:</label>
+<input type="number" @bind="Item.Prop_Price">
+<br>
+<br>
+<input type="submit" value="Submit" @onclick="SubmitItem">
+
+
+<table class="table table-striped">
+    <tr>
+        <th scope="col">Položka</th>
+        <th scope="col">Částka</th>
+        <th scope="col">Status</th>
+        <th scope="col">Stav</th>
+        <th scope="col">Akce</th>
+    </tr>
+
+    @foreach (Polozka objekt in items_List)
+    {
+
+        <tr>
+            <td scope="row">@objekt.Prop_Name</td>
+            <td>@objekt.Prop_Price</td>
+            @if (objekt.Prop_Status == Status.Complete)
+            {
+                <td><span class="badge badge-secondary">Splňeno</span></td>
+
+            }
+            else if (objekt.Prop_Price > 5000)
+            {
+                <td><span class="badge badge-warning">Moc drahé</span></td>
+            }else{
+                <td> <span class="badge badge-secondary">Čeká se na splnění</span></td>
+            }
+            <td>@if (@objekt.Prop_Enabled) 
+                {
+                    <input type="checkbox" id="scales" name="scales" @onclick="()=> Done(objekt)" checked />
+                   
+                } else {
+                    <input type="checkbox" id="scales" name="scales" @onclick="()=> Done(objekt)" />
+                }
+             </td >
+        <td> 
+            <button type="button" @onclick="()=> EditItem(objekt)" class="btn btn-primary">Editovat</button>
+            <button type="button" @onclick="()=> DeleteItem(objekt)" class=" btn btn-danger">Smazat</button>
+        </td>
+        </tr>
+
+
+    }
+</table>
+
+
+<h3>Statistiky</h3>
+<p>Celkový počet: @items_List.Count()</p>
+<p>Celkový splněnýh počet: @items_List.Count(x=>x.Prop_Enabled==true)</p>
+<p>Celkový nesplněných počet: @items_List.Count(x => x.Prop_Enabled == false)</p>
+
+<p>Celkový hodnota: @items_List.Sum(x => x.Prop_Price)</p>
+<p>
+    Celková hodnota splněných: @GetPrice(1);
+</p>
+
+<p>
+    Celková hodnota nesplněných: @GetPrice(0);
+</p>
